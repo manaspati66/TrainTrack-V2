@@ -1,0 +1,72 @@
+You are editing an existing Express + TypeScript + Drizzle + Postgres project (ManufacTMS). 
+Apply the following **RBAC and workflow corrections** without changing the stack or routing style.
+
+## 1) RBAC POLICY (authoritative)
+- HR Admin (hr_admin): full access.
+- Manager (manager):
+  - Can approve **Training Needs** only for their direct reports (users.managerId = manager.id). Final approval must be HR.
+  - Can view **Employee Records** limited to their department (and/or direct reports).
+  - Cannot create/edit **Skills, Vendors, Trainers**.
+  - Cannot **Create Training Plans**.
+  - Cannot **Approve Nominations**.
+  - Cannot **View Compliance Reports**.
+- Employee (employee): no changes.
+
+## 2) Database Migrations (Drizzle)
+- Alter `users`:
+  - add column `managerId varchar null` (FK to users.id).
+  - add indexes on (`department`), (`managerId`).
+- Alter `trainingNeeds`:
+  - add `managerApprovedBy varchar null`, `managerApprovedAt timestamp null`,
+  - add `hrApprovedBy varchar null`, `hrApprovedAt timestamp null`,
+  - replace `status` with enum: `SUBMITTED | MGR_APPROVED | HR_APPROVED | REJECTED`.
+  - migrate existing APPROVED → HR_APPROVED.
+
+Generate and apply Drizzle migrations accordingly.
+
+## 3) Middleware & Helpers
+Create:
+- `requireRole(...roles: Role[])` – 403 if not in allowed roles.
+- `requireManagerOfEmployee(req)` – loads target employeeId from params/body; 
+  checks `req.user.role === 'manager'` AND `employee.managerId === req.user.id`; 403 otherwise.
+- `scopedToDept(dept: string)` – wraps list handlers to add `WHERE users.department = :dept` when `req.user.role==='manager'`.
+
+## 4) Endpoint changes (Express routes)
+- SKILLS/VENDORS/TRAINERS/PLANS (create|update):
+  - Add `requireRole('hr_admin')`.
+- TRAINING NEEDS:
+  - `PATCH /api/training-needs/:id/approve`:
+    - If `req.user.role==='manager'` → set `managerApprovedBy/At`, status → `MGR_APPROVED` (only if target employee is direct report).
+    - If `req.user.role==='hr_admin'`:
+      - if currently `SUBMITTED` or `MGR_APPROVED` → set `hrApprovedBy/At`, status → `HR_APPROVED`.
+  - `PATCH /api/training-needs/:id/reject`:
+    - Allow manager to reject **only** their direct report’s need (set `status='REJECTED'`, record `rejectionReason`).
+    - HR can reject any.
+- NOMINATIONS:
+  - `PATCH /api/nominations/:id/(approve|reject|waitlist)` → **requireRole('hr_admin')** only.
+- EMPLOYEE RECORDS:
+  - List/search route: if role = manager → apply `scopedToDept(req.user.department)` (and/or filter to direct reports).
+- COMPLIANCE:
+  - `/api/compliance/*` → **requireRole('hr_admin')**.
+
+Return 403 JSON: `{error:'forbidden', reason:'role_or_scope'}`.
+
+## 5) UI (React)
+- Hide/create buttons based on `user.role`.
+- Sidebar/menu:
+  - Only HR sees Skills, Vendors, Trainers, Plans, Compliance.
+  - Managers see Training Needs Approvals + Employee Records (scoped by API).
+- On Need approval screens:
+  - If Manager → show "Manager Approve/Reject" only.
+  - If HR → show "Finalize Approval" (enables from SUBMITTED or MGR_APPROVED).
+
+## 6) Tests / Acceptance
+- Seed three users: hrA (HR), mgrB (Manager, dept=E002), empC (Employee, dept=E002, managerId=mgrB.id), empD (dept=E003).
+- Training Need by empC:
+  - mgrB approve → status `MGR_APPROVED`.
+  - hrA finalize → `HR_APPROVED`.
+- Training Need by empD:
+  - mgrB approve attempt → 403.
+- Manager attempts to create Skill/Plan/Nomination approval → 403.
+- Manager fetches Employee Records → returns only dept=E002 (or direct reports).
+- Compliance endpoints → 403 for manager.
