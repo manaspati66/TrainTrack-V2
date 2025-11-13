@@ -150,12 +150,19 @@ export default function TrainingCalendar() {
     if (!date) return [];
     const dateString = date.toISOString().split('T')[0];
     return trainingSessions.filter((session: any) => {
-      const sessionDate = new Date(session.sessionDate).toISOString().split('T')[0];
+      if (!session.sessionDate) return false;
+      const sessionDateObj = new Date(session.sessionDate);
+      if (isNaN(sessionDateObj.getTime())) return false;
+      const sessionDate = sessionDateObj.toISOString().split('T')[0];
       return sessionDate === dateString;
     });
   };
 
   const filteredSessions = trainingSessions.filter((session: any) => {
+    if (!session.sessionDate) return false;
+    const sessionDateObj = new Date(session.sessionDate);
+    if (isNaN(sessionDateObj.getTime())) return false;
+    
     if (filterCategory === "all") return true;
     const training = trainingCatalog.find((t: any) => t.id === session.trainingCatalogId);
     return training?.category === filterCategory;
