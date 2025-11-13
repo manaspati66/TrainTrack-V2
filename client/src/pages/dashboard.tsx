@@ -248,7 +248,7 @@ export default function Dashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-7 gap-4">
+              <div className="hidden md:grid md:grid-cols-7 gap-4">
                 {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
                   <div key={day} className="text-xs font-medium text-gray-500 uppercase tracking-wide py-2" data-testid={`calendar-header-${day.toLowerCase()}`}>
                     {day}
@@ -284,22 +284,45 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
+              <div className="md:hidden space-y-3">
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-sm">Mon, Dec 16</span>
+                    <span className="text-xs bg-manufacturing-blue text-white px-2 py-1 rounded">Scheduled</span>
+                  </div>
+                  <p className="text-sm text-gray-900">OSHA Safety</p>
+                </div>
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-sm">Wed, Dec 18</span>
+                    <span className="text-xs bg-compliance-green text-white px-2 py-1 rounded">Scheduled</span>
+                  </div>
+                  <p className="text-sm text-gray-900">Quality Control</p>
+                </div>
+                <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-sm">Thu, Dec 19</span>
+                    <span className="text-xs bg-alert-orange text-white px-2 py-1 rounded">Scheduled</span>
+                  </div>
+                  <p className="text-sm text-gray-900">Fire Safety Drill</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
           {/* Employee Training Status */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <CardTitle className="text-lg font-semibold">Employee Training Status</CardTitle>
-                <div className="flex items-center space-x-3">
-                  <select className="border border-gray-300 rounded-md px-3 py-2 text-sm" data-testid="select-department-filter">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <select className="border border-gray-300 rounded-md px-2 sm:px-3 py-2 text-xs sm:text-sm flex-1 sm:flex-none" data-testid="select-department-filter">
                     <option>All Departments</option>
                     <option>Production</option>
                     <option>Quality Control</option>
                     <option>Maintenance</option>
                   </select>
-                  <Button variant="outline" className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50" data-testid="button-export-compliance">
+                  <Button variant="outline" size="sm" className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50 text-xs sm:text-sm" data-testid="button-export-compliance">
                     Export
                   </Button>
                 </div>
@@ -310,28 +333,26 @@ export default function Dashboard() {
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-pulse text-gray-500">Loading compliance data...</div>
                 </div>
+              ) : employeeCompliance.length === 0 ? (
+                <div className="px-6 py-8 text-center text-gray-500" data-testid="text-no-compliance-data">
+                  No employee compliance data available
+                </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Training</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Next Due</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {employeeCompliance.length === 0 ? (
+                <>
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50 border-b border-gray-200">
                         <tr>
-                          <td colSpan={6} className="px-6 py-8 text-center text-gray-500" data-testid="text-no-compliance-data">
-                            No employee compliance data available
-                          </td>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance Status</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Training</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Next Due</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
-                      ) : (
-                        employeeCompliance.slice(0, 10).map((employee: any, index: number) => (
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {employeeCompliance.slice(0, 10).map((employee: any, index: number) => (
                           <tr key={employee.employeeId} className="hover:bg-gray-50" data-testid={`employee-row-${index}`}>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
@@ -389,11 +410,73 @@ export default function Dashboard() {
                               </Button>
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="md:hidden space-y-3">
+                    {employeeCompliance.slice(0, 10).map((employee: any, index: number) => (
+                      <div key={employee.employeeId} className="p-4 bg-gray-50 rounded-lg border border-gray-200" data-testid={`employee-card-${index}`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-manufacturing-blue flex items-center justify-center flex-shrink-0">
+                              <span className="text-white text-sm font-medium">
+                                {employee.employeeName.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium text-gray-900" data-testid={`text-employee-name-${index}`}>
+                                {employee.employeeName}
+                              </div>
+                              <div className="text-xs text-gray-500" data-testid={`text-employee-id-${index}`}>
+                                {employee.employeeId}
+                              </div>
+                            </div>
+                          </div>
+                          <Badge 
+                            variant={
+                              employee.complianceStatus === 'Compliant' ? 'default' :
+                              employee.complianceStatus === 'Expiring Soon' ? 'secondary' :
+                              'destructive'
+                            }
+                            className={`${
+                              employee.complianceStatus === 'Compliant' 
+                                ? 'bg-green-100 text-compliance-green hover:bg-green-100' :
+                              employee.complianceStatus === 'Expiring Soon'
+                                ? 'bg-orange-100 text-alert-orange hover:bg-orange-100' :
+                                'bg-red-100 text-critical-red hover:bg-red-100'
+                            } text-xs`}
+                            data-testid={`badge-status-${index}`}
+                          >
+                            {employee.complianceStatus}
+                          </Badge>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Department:</span>
+                            <span className="text-gray-900 font-medium" data-testid={`text-department-${index}`}>{employee.department}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Last Training:</span>
+                            <span className="text-gray-900" data-testid={`text-last-training-${index}`}>{employee.lastTraining || 'No record'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Next Due:</span>
+                            <span className="text-gray-900" data-testid={`text-next-due-${index}`}>{employee.nextDue || 'N/A'}</span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-3 pt-3 border-t border-gray-200">
+                          <Button variant="ghost" size="sm" className="flex-1 text-manufacturing-blue hover:text-blue-700" data-testid={`button-view-employee-${index}`}>
+                            View
+                          </Button>
+                          <Button variant="ghost" size="sm" className="flex-1 text-gray-600 hover:text-gray-900" data-testid={`button-edit-employee-${index}`}>
+                            Edit
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
