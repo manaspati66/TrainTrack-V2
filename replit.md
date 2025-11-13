@@ -2,9 +2,27 @@
 
 ManufacTMS is a comprehensive Training Management System designed specifically for manufacturing environments. The application provides compliance training management, certification tracking, audit requirement management, and regulatory compliance reporting. It features a modern web interface built with React and TypeScript, backed by a Node.js/Express server with PostgreSQL database storage.
 
-# Recent Changes (September 30, 2025)
+# Recent Changes (November 13, 2025)
 
-## Role-Aware Training Approval Workflows
+## Responsive Design Implementation
+- **Mobile-First Approach**: All 9 main pages now fully responsive across mobile (375px+), tablet (768px+), and desktop (1920px+) breakpoints
+- **Responsive Patterns**:
+  - Desktop tables convert to mobile card views using `hidden md:block` and `md:hidden` utilities
+  - Headers and button groups stack vertically on mobile (`flex-col sm:flex-row`)
+  - Buttons expand to full-width on mobile (`w-full sm:w-auto`)
+  - Grid layouts adapt across breakpoints (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`)
+  - Responsive spacing (`p-4 sm:p-6`) and typography (`text-xl sm:text-2xl`)
+- **Pages Updated**: Dashboard, Training Catalog, Training Calendar, Training Needs, Employee Records, Employee Management, Nominations, Training Plans, Skills, Vendors, Trainers, Compliance Reports
+- **Design Consistency**: Follows Material Design 3 principles from design_guidelines.md
+- **Accessibility**: All data-testid attributes preserved for testing; mobile-optimized touch targets
+
+## Known Issues
+- **React Warnings**: Console shows "Invalid hook call" and "missing keys" warnings on Dashboard load
+  - Application functions correctly despite warnings
+  - Warnings appear to be pre-existing, not introduced by responsive design changes
+  - Recommend investigation and resolution before production deployment
+
+## Role-Aware Training Approval Workflows (September 30, 2025)
 - **Submission Source Tracking**: Added `submissionSource` field to training_needs table (EMPLOYEE or MANAGER)
   - Automatically set based on requester's role when creating training needs
   - Manager-initiated requests require single-stage HR approval only
