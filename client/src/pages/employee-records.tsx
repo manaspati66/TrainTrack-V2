@@ -103,20 +103,20 @@ export default function EmployeeRecords() {
       <main className="flex-1 lg:ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4">
+            <div className="flex flex-col gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900" data-testid="text-records-title">Employee Training Records</h2>
-                <p className="text-gray-600 mt-1">Monitor individual training compliance and certification status</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900" data-testid="text-records-title">Employee Training Records</h2>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base hidden sm:block">Monitor individual training compliance and certification status</p>
               </div>
               
-              <div className="flex items-center space-x-4">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="relative flex-1 sm:flex-initial">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input 
                     type="text" 
                     placeholder="Search employees..." 
-                    className="pl-10 pr-4 w-80"
+                    className="pl-10 pr-4 w-full sm:w-80"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     data-testid="input-search-employees"
@@ -124,7 +124,7 @@ export default function EmployeeRecords() {
                 </div>
 
                 <Select value={filterDepartment} onValueChange={setFilterDepartment}>
-                  <SelectTrigger className="w-48" data-testid="select-department-filter">
+                  <SelectTrigger className="w-full sm:w-48" data-testid="select-department-filter">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue placeholder="All Departments" />
                   </SelectTrigger>
@@ -137,7 +137,7 @@ export default function EmployeeRecords() {
                 </Select>
 
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-48" data-testid="select-status-filter">
+                  <SelectTrigger className="w-full sm:w-48" data-testid="select-status-filter">
                     <SelectValue placeholder="All Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -150,7 +150,7 @@ export default function EmployeeRecords() {
                 
                 <Button 
                   variant="outline" 
-                  className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50"
+                  className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50 w-full sm:w-auto"
                   data-testid="button-export-records"
                 >
                   <Download className="h-4 w-4 mr-2" />
@@ -161,9 +161,9 @@ export default function EmployeeRecords() {
           </div>
         </header>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -240,98 +240,190 @@ export default function EmployeeRecords() {
                   <div className="animate-pulse text-gray-500">Loading employee records...</div>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Training</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Next Due</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredEmployees.length === 0 ? (
+                <>
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50 border-b border-gray-200">
                         <tr>
-                          <td colSpan={6} className="px-6 py-8 text-center text-gray-500" data-testid="text-no-employees">
-                            {searchTerm || filterDepartment || filterStatus ? "No employees match your filters" : "No employee records available"}
-                          </td>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance Status</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Training</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Next Due</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
-                      ) : (
-                        filteredEmployees.map((employee: any, index: number) => (
-                          <tr key={employee.employeeId} className="hover:bg-gray-50" data-testid={`employee-record-${index}`}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <Avatar className="h-8 w-8">
-                                  <AvatarImage src="" alt={employee.employeeName} />
-                                  <AvatarFallback className="bg-manufacturing-blue text-white text-sm">
-                                    {employee.employeeName.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900" data-testid={`text-employee-name-${index}`}>
-                                    {employee.employeeName}
-                                  </div>
-                                  <div className="text-sm text-gray-500" data-testid={`text-employee-id-${index}`}>
-                                    {employee.employeeId}
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {filteredEmployees.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="px-6 py-8 text-center text-gray-500" data-testid="text-no-employees">
+                              {searchTerm || filterDepartment || filterStatus ? "No employees match your filters" : "No employee records available"}
+                            </td>
+                          </tr>
+                        ) : (
+                          filteredEmployees.map((employee: any, index: number) => (
+                            <tr key={employee.employeeId} className="hover:bg-gray-50" data-testid={`employee-record-${index}`}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarImage src="" alt={employee.employeeName} />
+                                    <AvatarFallback className="bg-manufacturing-blue text-white text-sm">
+                                      {employee.employeeName.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="ml-4">
+                                    <div className="text-sm font-medium text-gray-900" data-testid={`text-employee-name-${index}`}>
+                                      {employee.employeeName}
+                                    </div>
+                                    <div className="text-sm text-gray-500" data-testid={`text-employee-id-${index}`}>
+                                      {employee.employeeId}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-department-${index}`}>
-                              {employee.department || 'N/A'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge 
-                                className={getStatusColor(employee.complianceStatus)}
-                                data-testid={`badge-status-${index}`}
-                              >
-                                {employee.complianceStatus}
-                              </Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-last-training-${index}`}>
-                              {employee.lastTraining || 'No training record'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm" data-testid={`text-next-due-${index}`}>
-                              <span className={
-                                employee.complianceStatus === 'Overdue' 
-                                  ? 'text-critical-red font-medium' 
-                                  : employee.complianceStatus === 'Expiring Soon'
-                                  ? 'text-alert-orange font-medium'
-                                  : 'text-gray-900'
-                              }>
-                                {employee.nextDue || 'N/A'}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="text-manufacturing-blue hover:text-blue-700 mr-3"
-                                onClick={() => handleViewDetails(employee)}
-                                data-testid={`button-view-employee-${index}`}
-                              >
-                                View Details
-                              </Button>
-                              {canViewAllRecords && (
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-department-${index}`}>
+                                {employee.department || 'N/A'}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Badge 
+                                  className={getStatusColor(employee.complianceStatus)}
+                                  data-testid={`badge-status-${index}`}
+                                >
+                                  {employee.complianceStatus}
+                                </Badge>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-last-training-${index}`}>
+                                {employee.lastTraining || 'No training record'}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm" data-testid={`text-next-due-${index}`}>
+                                <span className={
+                                  employee.complianceStatus === 'Overdue' 
+                                    ? 'text-critical-red font-medium' 
+                                    : employee.complianceStatus === 'Expiring Soon'
+                                    ? 'text-alert-orange font-medium'
+                                    : 'text-gray-900'
+                                }>
+                                  {employee.nextDue || 'N/A'}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <Button 
                                   variant="ghost" 
                                   size="sm" 
-                                  className="text-gray-600 hover:text-gray-900"
-                                  data-testid={`button-edit-employee-${index}`}
+                                  className="text-manufacturing-blue hover:text-blue-700 mr-3"
+                                  onClick={() => handleViewDetails(employee)}
+                                  data-testid={`button-view-employee-${index}`}
                                 >
-                                  Edit
+                                  View Details
                                 </Button>
-                              )}
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                                {canViewAllRecords && (
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="text-gray-600 hover:text-gray-900"
+                                    data-testid={`button-edit-employee-${index}`}
+                                  >
+                                    Edit
+                                  </Button>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="md:hidden space-y-3">
+                    {filteredEmployees.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500" data-testid="text-no-employees">
+                        {searchTerm || filterDepartment || filterStatus ? "No employees match your filters" : "No employee records available"}
+                      </div>
+                    ) : (
+                      filteredEmployees.map((employee: any, index: number) => (
+                        <div key={employee.employeeId} className="p-4 bg-gray-50 rounded-lg border border-gray-200" data-testid={`employee-record-${index}`}>
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center">
+                              <Avatar className="h-10 w-10">
+                                <AvatarImage src="" alt={employee.employeeName} />
+                                <AvatarFallback className="bg-manufacturing-blue text-white text-sm">
+                                  {employee.employeeName.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="ml-3">
+                                <div className="text-sm font-medium text-gray-900" data-testid={`text-employee-name-${index}`}>
+                                  {employee.employeeName}
+                                </div>
+                                <div className="text-xs text-gray-500" data-testid={`text-employee-id-${index}`}>
+                                  {employee.employeeId}
+                                </div>
+                              </div>
+                            </div>
+                            <Badge 
+                              className={getStatusColor(employee.complianceStatus)}
+                              data-testid={`badge-status-${index}`}
+                            >
+                              {employee.complianceStatus}
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Department:</span>
+                              <span className="font-medium" data-testid={`text-department-${index}`}>
+                                {employee.department || 'N/A'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Last Training:</span>
+                              <span className="font-medium" data-testid={`text-last-training-${index}`}>
+                                {employee.lastTraining || 'No training record'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Next Due:</span>
+                              <span 
+                                className={`font-medium ${
+                                  employee.complianceStatus === 'Overdue' 
+                                    ? 'text-critical-red' 
+                                    : employee.complianceStatus === 'Expiring Soon'
+                                    ? 'text-alert-orange'
+                                    : 'text-gray-900'
+                                }`}
+                                data-testid={`text-next-due-${index}`}
+                              >
+                                {employee.nextDue || 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-2 mt-3 pt-3 border-t">
+                            <Button 
+                              size="sm" 
+                              className="flex-1 bg-manufacturing-blue hover:bg-blue-700"
+                              onClick={() => handleViewDetails(employee)}
+                              data-testid={`button-view-employee-${index}`}
+                            >
+                              View Details
+                            </Button>
+                            {canViewAllRecords && (
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="flex-1"
+                                data-testid={`button-edit-employee-${index}`}
+                              >
+                                Edit
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>

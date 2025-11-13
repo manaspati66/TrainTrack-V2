@@ -137,50 +137,52 @@ export default function ComplianceReports() {
       <main className="flex-1 lg:ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900" data-testid="text-reports-title">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900" data-testid="text-reports-title">
                   Compliance Reports
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-600 mt-1 text-sm sm:text-base hidden sm:block">
                   Generate audit-ready compliance reports and analytics
                 </p>
               </div>
               
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 <Button 
                   variant="outline" 
                   onClick={() => exportData("pdf")}
-                  className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50"
+                  className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50 flex-1 sm:flex-initial"
                   data-testid="button-export-pdf"
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Export PDF
+                  <span className="hidden sm:inline">Export PDF</span>
+                  <span className="sm:hidden">PDF</span>
                 </Button>
                 
                 <Button 
                   variant="outline" 
                   onClick={() => exportData("excel")}
-                  className="text-compliance-green border-compliance-green hover:bg-green-50"
+                  className="text-compliance-green border-compliance-green hover:bg-green-50 flex-1 sm:flex-initial"
                   data-testid="button-export-excel"
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Export Excel
+                  <span className="hidden sm:inline">Export Excel</span>
+                  <span className="sm:hidden">Excel</span>
                 </Button>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {/* Report Type Selection */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg font-semibold">Report Types</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {filteredReportTypes.map((report) => {
                   const Icon = report.icon;
                   const isSelected = selectedReport === report.id;
@@ -214,7 +216,7 @@ export default function ComplianceReports() {
               <CardTitle className="text-lg font-semibold">Report Filters</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div>
                   <Label htmlFor="date-range">Date Range</Label>
                   <div className="mt-1">

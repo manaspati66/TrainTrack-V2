@@ -408,12 +408,12 @@ export default function TrainingCalendar() {
           </div>
         </header>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {/* Calendar View Controls */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center justify-center sm:justify-start space-x-3 sm:space-x-4">
                   <Button
                     variant="outline"
                     size="sm"
@@ -423,7 +423,7 @@ export default function TrainingCalendar() {
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
                   
-                  <h3 className="text-lg font-semibold" data-testid="text-current-month">
+                  <h3 className="text-base sm:text-lg font-semibold" data-testid="text-current-month">
                     {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                   </h3>
                   
@@ -438,7 +438,7 @@ export default function TrainingCalendar() {
                 </div>
 
                 <Tabs value={activeView} onValueChange={setActiveView}>
-                  <TabsList>
+                  <TabsList className="w-full sm:w-auto grid grid-cols-2">
                     <TabsTrigger value="month" data-testid="tab-month-view">Month</TabsTrigger>
                     <TabsTrigger value="list" data-testid="tab-list-view">List</TabsTrigger>
                   </TabsList>
@@ -451,13 +451,14 @@ export default function TrainingCalendar() {
                   {/* Calendar Grid */}
                   <div className="grid grid-cols-7 gap-1 mb-4">
                     {weekDays.map((day) => (
-                      <div key={day} className="p-2 text-center font-medium text-gray-500 text-sm">
-                        {day}
+                      <div key={day} className="p-1 sm:p-2 text-center font-medium text-gray-500 text-xs sm:text-sm">
+                        <span className="hidden sm:inline">{day}</span>
+                        <span className="sm:hidden">{day.charAt(0)}</span>
                       </div>
                     ))}
                   </div>
                   
-                  <div className="grid grid-cols-7 gap-1">
+                  <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
                     {getDaysInMonth(currentDate).map((date, index) => {
                       const isToday = date && date.toDateString() === new Date().toDateString();
                       const sessionsOnDate = getSessionsForDate(date);
@@ -465,37 +466,40 @@ export default function TrainingCalendar() {
                       return (
                         <div
                           key={index}
-                          className={`min-h-24 p-2 border border-gray-200 cursor-pointer hover:bg-gray-50 ${
+                          className={`min-h-16 sm:min-h-24 p-1 sm:p-2 border border-gray-200 cursor-pointer hover:bg-gray-50 ${
                             date ? 'bg-white' : 'bg-gray-50'
-                          } ${isToday ? 'ring-2 ring-manufacturing-blue' : ''}`}
+                          } ${isToday ? 'ring-1 sm:ring-2 ring-manufacturing-blue' : ''}`}
                           onClick={() => date && setSelectedDate(date)}
                           data-testid={date ? `calendar-day-${date.getDate()}` : undefined}
                         >
                           {date && (
                             <>
-                              <div className={`text-sm font-medium ${isToday ? 'text-manufacturing-blue' : 'text-gray-900'}`}>
+                              <div className={`text-xs sm:text-sm font-medium ${isToday ? 'text-manufacturing-blue' : 'text-gray-900'}`}>
                                 {date.getDate()}
                               </div>
                               
                               {sessionsOnDate.length > 0 && (
-                                <div className="mt-1 space-y-1">
-                                  {sessionsOnDate.slice(0, 2).map((session: any, idx: number) => {
-                                    const training = trainingCatalog.find((t: any) => t.id === session.trainingCatalogId);
-                                    return (
-                                      <div
-                                        key={idx}
-                                        className="text-xs p-1 bg-manufacturing-blue text-white rounded truncate"
-                                        title={training?.title || 'Training Session'}
-                                      >
-                                        {training?.title || 'Training'}
+                                <div className="mt-0.5 sm:mt-1 space-y-0.5 sm:space-y-1">
+                                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-manufacturing-blue sm:hidden" />
+                                  <div className="hidden sm:block">
+                                    {sessionsOnDate.slice(0, 2).map((session: any, idx: number) => {
+                                      const training = trainingCatalog.find((t: any) => t.id === session.trainingCatalogId);
+                                      return (
+                                        <div
+                                          key={idx}
+                                          className="text-xs p-1 bg-manufacturing-blue text-white rounded truncate"
+                                          title={training?.title || 'Training Session'}
+                                        >
+                                          {training?.title || 'Training'}
+                                        </div>
+                                      );
+                                    })}
+                                    {sessionsOnDate.length > 2 && (
+                                      <div className="text-xs text-gray-500">
+                                        +{sessionsOnDate.length - 2} more
                                       </div>
-                                    );
-                                  })}
-                                  {sessionsOnDate.length > 2 && (
-                                    <div className="text-xs text-gray-500">
-                                      +{sessionsOnDate.length - 2} more
-                                    </div>
-                                  )}
+                                    )}
+                                  </div>
                                 </div>
                               )}
                             </>

@@ -345,20 +345,20 @@ export default function TrainingCatalog() {
       <main className="flex-1 lg:ml-64 transition-all duration-300">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4">
+            <div className="flex flex-col gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900" data-testid="text-catalog-title">Training Management System</h2>
-                <p className="text-gray-600 mt-1">Manage training courses, feedback, and compliance requirements</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900" data-testid="text-catalog-title">Training Management System</h2>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base hidden sm:block">Manage training courses, feedback, and compliance requirements</p>
               </div>
               
-              <div className="flex items-center space-x-4">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="relative flex-1 sm:flex-initial">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input 
                     type="text" 
                     placeholder="Search training courses..." 
-                    className="pl-10 pr-4 w-80"
+                    className="pl-10 pr-4 w-full sm:w-80"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     data-testid="input-search-catalog"
@@ -366,7 +366,7 @@ export default function TrainingCatalog() {
                 </div>
 
                 <Select value={filterCategory} onValueChange={setFilterCategory}>
-                  <SelectTrigger className="w-48" data-testid="select-category-filter">
+                  <SelectTrigger className="w-full sm:w-48" data-testid="select-category-filter">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
@@ -385,11 +385,12 @@ export default function TrainingCatalog() {
                     <Button 
                       variant="outline" 
                       onClick={handleDownloadTemplate}
-                      className="border-manufacturing-blue text-manufacturing-blue hover:bg-manufacturing-blue hover:text-white"
+                      className="border-manufacturing-blue text-manufacturing-blue hover:bg-manufacturing-blue hover:text-white w-full sm:w-auto"
                       data-testid="button-download-template"
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      Download Template
+                      <span className="hidden sm:inline">Download Template</span>
+                      <span className="sm:hidden">Template</span>
                     </Button>
                     
                     <div className="relative">
@@ -404,7 +405,7 @@ export default function TrainingCatalog() {
                       <Button 
                         variant="outline" 
                         disabled={isImporting || bulkImportMutation.isPending}
-                        className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+                        className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white w-full sm:w-auto"
                         data-testid="button-import-excel"
                       >
                         <Upload className="h-4 w-4 mr-2" />
@@ -417,7 +418,7 @@ export default function TrainingCatalog() {
                 {canCreateTraining && (
                   <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
                     <DialogTrigger asChild>
-                      <Button className="bg-manufacturing-blue hover:bg-blue-700" data-testid="button-add-training-catalog">
+                      <Button className="bg-manufacturing-blue hover:bg-blue-700 w-full sm:w-auto" data-testid="button-add-training-catalog">
                         <Plus className="h-4 w-4 mr-2" />
                         Add Training
                       </Button>
@@ -688,8 +689,8 @@ export default function TrainingCatalog() {
 
         {/* Tab Navigation */}
         <div className="bg-white border-b border-gray-200">
-          <nav className="px-6">
-            <div className="flex space-x-8">
+          <nav className="px-4 sm:px-6">
+            <div className="flex space-x-4 sm:space-x-8 overflow-x-auto">
               {[
                 { id: "catalog", label: "Training Catalog", icon: BookOpen },
                 { id: "feedback", label: "Training Feedback", icon: MessageSquare },
@@ -707,10 +708,11 @@ export default function TrainingCatalog() {
                       activeTab === tab.id
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    } whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
+                    } whitespace-nowrap py-3 px-1 border-b-2 font-medium text-xs sm:text-sm flex items-center space-x-2`}
                   >
                     <Icon className="h-4 w-4" />
-                    <span>{tab.label}</span>
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
                   </button>
                 );
               })}
@@ -720,7 +722,7 @@ export default function TrainingCatalog() {
 
         {/* Content */}
         {activeTab === "catalog" && (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
           {isLoadingCatalog ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-pulse text-gray-500">Loading training catalog...</div>
@@ -867,31 +869,31 @@ export default function TrainingCatalog() {
 
         {/* Other Tab Contents */}
         {activeTab === "feedback" && (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <TrainingFeedback />
           </div>
         )}
 
         {activeTab === "evaluations" && (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <ManagerEvaluations />
           </div>
         )}
 
         {activeTab === "evidence" && (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <EvidenceAttachments />
           </div>
         )}
 
         {activeTab === "compliance" && (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <ComplianceManagement />
           </div>
         )}
 
         {activeTab === "reports" && (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <TrainingHoursReport />
           </div>
         )}

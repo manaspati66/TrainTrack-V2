@@ -216,13 +216,13 @@ export default function EmployeeManagement() {
       <main className="flex-1 lg:ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900" data-testid="text-employee-management-title">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900" data-testid="text-employee-management-title">
                   Employee Management
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-600 mt-1 text-sm sm:text-base hidden sm:block">
                   Manage employees, departments, and organizational structure
                 </p>
               </div>
@@ -230,7 +230,7 @@ export default function EmployeeManagement() {
               <div className="flex items-center space-x-4">
                 <Button 
                   variant="outline" 
-                  className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50"
+                  className="text-manufacturing-blue border-manufacturing-blue hover:bg-blue-50 w-full sm:w-auto"
                   data-testid="button-export-employees"
                 >
                   <Download className="h-4 w-4 mr-2" />
@@ -241,9 +241,9 @@ export default function EmployeeManagement() {
           </div>
         </header>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -311,9 +311,9 @@ export default function EmployeeManagement() {
 
           {/* Management Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="employees" data-testid="tab-employees">Employees</TabsTrigger>
-              <TabsTrigger value="departments" data-testid="tab-departments">Departments</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 h-auto">
+              <TabsTrigger value="employees" data-testid="tab-employees" className="text-sm sm:text-base">Employees</TabsTrigger>
+              <TabsTrigger value="departments" data-testid="tab-departments" className="text-sm sm:text-base">Departments</TabsTrigger>
             </TabsList>
 
             <TabsContent value="employees">
@@ -471,13 +471,13 @@ export default function EmployeeManagement() {
                 </CardHeader>
                 <CardContent>
                   {/* Filters */}
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className="relative flex-1 max-w-sm">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+                    <div className="relative flex-1 sm:max-w-sm">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <Input 
                         type="text" 
                         placeholder="Search employees..." 
-                        className="pl-10"
+                        className="pl-10 w-full"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         data-testid="input-search-employees"
@@ -485,7 +485,7 @@ export default function EmployeeManagement() {
                     </div>
 
                     <Select value={filterDepartment} onValueChange={setFilterDepartment}>
-                      <SelectTrigger className="w-48" data-testid="select-filter-department">
+                      <SelectTrigger className="w-full sm:w-48" data-testid="select-filter-department">
                         <Filter className="h-4 w-4 mr-2" />
                         <SelectValue placeholder="All Departments" />
                       </SelectTrigger>
@@ -498,7 +498,7 @@ export default function EmployeeManagement() {
                     </Select>
 
                     <Select value={filterRole} onValueChange={setFilterRole}>
-                      <SelectTrigger className="w-48" data-testid="select-filter-role">
+                      <SelectTrigger className="w-full sm:w-48" data-testid="select-filter-role">
                         <SelectValue placeholder="All Roles" />
                       </SelectTrigger>
                       <SelectContent>
@@ -516,90 +516,174 @@ export default function EmployeeManagement() {
                       <div className="animate-pulse text-gray-500">Loading employees...</div>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {filteredEmployees.length === 0 ? (
+                    <>
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full">
+                          <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                              <td colSpan={5} className="px-6 py-8 text-center text-gray-500" data-testid="text-no-employees">
-                                {searchTerm || filterDepartment !== "all" || filterRole !== "all" ? "No employees match your filters" : "No employees found"}
-                              </td>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
-                          ) : (
-                            filteredEmployees.map((employee: any, index: number) => (
-                              <tr key={employee.id} className="hover:bg-gray-50" data-testid={`employee-row-${index}`}>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                  <div className="flex items-center">
-                                    <Avatar className="h-8 w-8">
-                                      <AvatarImage src={employee.profileImageUrl} alt={`${employee.firstName} ${employee.lastName}`} />
-                                      <AvatarFallback className="bg-manufacturing-blue text-white text-sm">
-                                        {employee.firstName?.[0]}{employee.lastName?.[0]}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div className="ml-4">
-                                      <div className="text-sm font-medium text-gray-900" data-testid={`text-employee-name-${index}`}>
-                                        {employee.firstName} {employee.lastName}
-                                      </div>
-                                      <div className="text-sm text-gray-500" data-testid={`text-employee-username-${index}`}>
-                                        {employee.username}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                  <Badge 
-                                    className={
-                                      employee.role === 'hr_admin' 
-                                        ? 'bg-purple-100 text-purple-800' :
-                                      employee.role === 'manager'
-                                        ? 'bg-blue-100 text-blue-800' :
-                                        'bg-gray-100 text-gray-800'
-                                    }
-                                    data-testid={`badge-employee-role-${index}`}
-                                  >
-                                    {employee.role === 'hr_admin' ? 'HR Admin' : 
-                                     employee.role === 'manager' ? 'Manager' : 'Employee'}
-                                  </Badge>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-employee-department-${index}`}>
-                                  {employee.department || 'N/A'}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-employee-id-${index}`}>
-                                  {employee.employeeId || 'N/A'}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="text-manufacturing-blue hover:text-blue-700 mr-3"
-                                    data-testid={`button-edit-employee-${index}`}
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="text-red-600 hover:text-red-700"
-                                    data-testid={`button-delete-employee-${index}`}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredEmployees.length === 0 ? (
+                              <tr>
+                                <td colSpan={5} className="px-6 py-8 text-center text-gray-500" data-testid="text-no-employees">
+                                  {searchTerm || filterDepartment !== "all" || filterRole !== "all" ? "No employees match your filters" : "No employees found"}
                                 </td>
                               </tr>
-                            ))
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+                            ) : (
+                              filteredEmployees.map((employee: any, index: number) => (
+                                <tr key={employee.id} className="hover:bg-gray-50" data-testid={`employee-row-${index}`}>
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                      <Avatar className="h-8 w-8">
+                                        <AvatarImage src={employee.profileImageUrl} alt={`${employee.firstName} ${employee.lastName}`} />
+                                        <AvatarFallback className="bg-manufacturing-blue text-white text-sm">
+                                          {employee.firstName?.[0]}{employee.lastName?.[0]}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <div className="ml-4">
+                                        <div className="text-sm font-medium text-gray-900" data-testid={`text-employee-name-${index}`}>
+                                          {employee.firstName} {employee.lastName}
+                                        </div>
+                                        <div className="text-sm text-gray-500" data-testid={`text-employee-username-${index}`}>
+                                          {employee.username}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <Badge 
+                                      className={
+                                        employee.role === 'hr_admin' 
+                                          ? 'bg-purple-100 text-purple-800' :
+                                        employee.role === 'manager'
+                                          ? 'bg-blue-100 text-blue-800' :
+                                          'bg-gray-100 text-gray-800'
+                                      }
+                                      data-testid={`badge-employee-role-${index}`}
+                                    >
+                                      {employee.role === 'hr_admin' ? 'HR Admin' : 
+                                       employee.role === 'manager' ? 'Manager' : 'Employee'}
+                                    </Badge>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-employee-department-${index}`}>
+                                    {employee.department || 'N/A'}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-testid={`text-employee-id-${index}`}>
+                                    {employee.employeeId || 'N/A'}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="text-manufacturing-blue hover:text-blue-700 mr-3"
+                                      data-testid={`button-edit-employee-${index}`}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="text-red-600 hover:text-red-700"
+                                      data-testid={`button-delete-employee-${index}`}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden space-y-3">
+                        {filteredEmployees.length === 0 ? (
+                          <div className="text-center py-8 text-gray-500" data-testid="text-no-employees">
+                            {searchTerm || filterDepartment !== "all" || filterRole !== "all" ? "No employees match your filters" : "No employees found"}
+                          </div>
+                        ) : (
+                          filteredEmployees.map((employee: any, index: number) => (
+                            <div key={employee.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200" data-testid={`employee-row-${index}`}>
+                              <div className="flex items-start justify-between mb-3">
+                                <div className="flex items-center">
+                                  <Avatar className="h-10 w-10">
+                                    <AvatarImage src={employee.profileImageUrl} alt={`${employee.firstName} ${employee.lastName}`} />
+                                    <AvatarFallback className="bg-manufacturing-blue text-white text-sm">
+                                      {employee.firstName?.[0]}{employee.lastName?.[0]}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="ml-3">
+                                    <div className="text-sm font-medium text-gray-900" data-testid={`text-employee-name-${index}`}>
+                                      {employee.firstName} {employee.lastName}
+                                    </div>
+                                    <div className="text-xs text-gray-500" data-testid={`text-employee-username-${index}`}>
+                                      {employee.username}
+                                    </div>
+                                  </div>
+                                </div>
+                                <Badge 
+                                  className={
+                                    employee.role === 'hr_admin' 
+                                      ? 'bg-purple-100 text-purple-800' :
+                                    employee.role === 'manager'
+                                      ? 'bg-blue-100 text-blue-800' :
+                                      'bg-gray-100 text-gray-800'
+                                  }
+                                  data-testid={`badge-employee-role-${index}`}
+                                >
+                                  {employee.role === 'hr_admin' ? 'HR Admin' : 
+                                   employee.role === 'manager' ? 'Manager' : 'Employee'}
+                                </Badge>
+                              </div>
+                              
+                              <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">Department:</span>
+                                  <span className="font-medium" data-testid={`text-employee-department-${index}`}>
+                                    {employee.department || 'N/A'}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">Employee ID:</span>
+                                  <span className="font-medium" data-testid={`text-employee-id-${index}`}>
+                                    {employee.employeeId || 'N/A'}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className="flex gap-2 mt-3 pt-3 border-t">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  className="flex-1"
+                                  data-testid={`button-edit-employee-${index}`}
+                                >
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  className="flex-1 text-red-600 hover:text-red-700"
+                                  data-testid={`button-delete-employee-${index}`}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete
+                                </Button>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>
